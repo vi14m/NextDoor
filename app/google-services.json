@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "673685268219",
+    "project_id": "comalert-a97f9",
+    "storage_bucket": "comalert-a97f9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:673685268219:android:fc972a03fd712e5356f25e",
+        "android_client_info": {
+          "package_name": "com.example.comalert"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJ_fkj4ueax5UXsHkXAkQsw-O3Yl_7sFg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
