@@ -45,9 +45,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.comalert.data.viewModel.AlertViewModel
-import com.example.comalert.data.viewModel.AuthState
-import com.example.comalert.data.viewModel.AuthViewModel
+import com.example.comalert.viewModel.AlertViewModel
+import com.example.comalert.viewModel.AuthState
+import com.example.comalert.viewModel.AuthViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
@@ -137,7 +137,7 @@ fun HomeScreen(navController: NavController, alertViewModel: AlertViewModel = hi
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Text(
-                        text = "Location permission is needed to show your current location.",
+                        text = "Location permission is needed to show alerts location.",
                         color = Color.White,
                         fontSize = 18.sp,
                         textAlign = TextAlign.Center

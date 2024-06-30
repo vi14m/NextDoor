@@ -28,10 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.example.comalert.data.viewModel.AlertViewModel
+import com.example.comalert.viewModel.AlertViewModel
 
 @Composable
-fun AlertDetailsScreen(alertId: Int, navController: NavController, alertViewModel: AlertViewModel) {
+fun AlertDetailsScreen(alertId: String, navController: NavController, alertViewModel: AlertViewModel) {
     val alert by alertViewModel.getAlertById(alertId).observeAsState()
 
     alert?.let {
@@ -39,14 +39,14 @@ fun AlertDetailsScreen(alertId: Int, navController: NavController, alertViewMode
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0xFF2E1C1A))
-                .statusBarsPadding() // Add padding for status bar
-                .navigationBarsPadding() // Add padding for navigation bar
+                .statusBarsPadding()
+                .navigationBarsPadding()
                 .padding(16.dp)
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 4.dp), // Adjust padding as needed
+                    .padding(horizontal = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -69,7 +69,6 @@ fun AlertDetailsScreen(alertId: Int, navController: NavController, alertViewMode
 
                 Spacer(modifier = Modifier.weight(1f))
             }
-
 
             Spacer(modifier = Modifier.height(20.dp))
             it.mediaUri?.let { uri ->
@@ -104,5 +103,6 @@ fun AlertDetailsScreen(alertId: Int, navController: NavController, alertViewMode
         }
     }
 }
+
 
 

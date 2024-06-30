@@ -76,6 +76,8 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.firestore.ktx)
     androidTestImplementation(project(":app"))
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.paging)

@@ -1,5 +1,9 @@
 package com.example.comalert.presentation
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -9,7 +13,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -28,10 +32,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.example.comalert.data.local.Alert
-import com.example.comalert.data.viewModel.AlertViewModel
+import com.example.comalert.data.remote.Alert
+import com.example.comalert.viewModel.AlertViewModel
+import com.google.android.gms.location.LocationServices
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,10 +47,29 @@ fun PostAlertScreen(navController: NavController, alertViewModel: AlertViewModel
     var description by remember { mutableStateOf("") }
     var urgencyLevel by remember { mutableStateOf("Low") }
     var mediaUri by remember { mutableStateOf<Uri?>(null) }
+    var latitude by remember { mutableDoubleStateOf(0.0) }
+    var longitude by remember { mutableDoubleStateOf(0.0) }
 
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         mediaUri = uri
+    }
+
+    // Get the current location
+    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
+    LaunchedEffect(Unit) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                location?.let {
+                    latitude = it.latitude
+                    longitude = it.longitude
+                }
+            }
+        } else {
+            // Request permissions if not granted
+            ActivityCompat.requestPermissions(context as Activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1001)
+        }
     }
 
     Scaffold(
@@ -163,6 +189,26 @@ fun PostAlertScreen(navController: NavController, alertViewModel: AlertViewModel
             UrgencyLevelOption("Low", urgencyLevel) { urgencyLevel = it }
             UrgencyLevelOption("Medium", urgencyLevel) { urgencyLevel = it }
             UrgencyLevelOption("High", urgencyLevel) { urgencyLevel = it }
+            Spacer(modifier = Modifier.height(16.dp))
+//            Row(
+//                verticalAlignment = Alignment.CenterVertically,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//            ) {
+//                Text("Location", color = Color.White, fontWeight = FontWeight.Bold)
+//                Spacer(modifier = Modifier.weight(1f))
+//                Icon(
+//                    imageVector = Icons.Default.LocationOn,
+//                    contentDescription = "Select location",
+//                    tint = Color.White,
+//                    modifier = Modifier.clickable {
+//                        val gmmIntentUri = Uri.parse("geo:0,0?q=locate")
+//                        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+//                        mapIntent.setPackage("com.google.android.apps.maps")
+//                        context.startActivity(mapIntent)
+//                    }
+//                )
+//            }
             Spacer(modifier = Modifier.height(24.dp))
             Button(
                 onClick = {
@@ -173,7 +219,9 @@ fun PostAlertScreen(navController: NavController, alertViewModel: AlertViewModel
                                 description = description,
                                 urgencyLevel = urgencyLevel,
                                 timestamp = System.currentTimeMillis(),
-                                mediaUri = mediaUri?.toString()
+                                mediaUri = mediaUri?.toString(),
+                                latitude = latitude,
+                                longitude = longitude
                             )
                         )
                         navController.navigateUp()
@@ -193,7 +241,6 @@ fun PostAlertScreen(navController: NavController, alertViewModel: AlertViewModel
     }
 }
 
-
 @Composable
 fun UrgencyLevelOption(level: String, selectedLevel: String, onSelected: (String) -> Unit) {
     Row(
@@ -203,7 +250,7 @@ fun UrgencyLevelOption(level: String, selectedLevel: String, onSelected: (String
             .clickable { onSelected(level) }
             .padding(vertical = 8.dp)
             .border(BorderStroke(1.dp, Color.Gray), RoundedCornerShape(8.dp))
-            .padding(horizontal = 16.dp) // Inner padding
+            .padding(horizontal = 16.dp)
     ) {
         Text(level, color = Color.White)
         Spacer(modifier = Modifier.weight(1f))
@@ -215,8 +262,5 @@ fun UrgencyLevelOption(level: String, selectedLevel: String, onSelected: (String
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun PostAlertScreenPreview() {
 
-}
+

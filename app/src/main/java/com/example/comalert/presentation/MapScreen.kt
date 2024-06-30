@@ -29,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.comalert.viewModel.AlertViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -46,25 +48,16 @@ import com.google.maps.android.compose.Marker
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @SuppressLint("MissingPermission")
-fun MapScreen() {
+fun MapScreen(alertViewModel: AlertViewModel) {
     var searchQuery by remember { mutableStateOf("") }
     var selectedUrgency by remember { mutableStateOf("All") }
-    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(LocalContext.current)
-    var currentLocation by remember { mutableStateOf(LatLng(0.0, 0.0)) }
-    fusedLocationClient.getCurrentLocation(LocationRequest.QUALITY_BALANCED_POWER_ACCURACY, null)
-        .addOnSuccessListener { location: Location? ->
-            if (location != null) {
-                currentLocation = LatLng(location.latitude, location.longitude)
-                // Use the latitude and longitude values
-            } else {
-                // Handle the case where location is null
-                Log.e("MapScreen", "Location is null")
-            }
-        }
 
     val uiSettings by remember {
         mutableStateOf(MapUiSettings(zoomControlsEnabled = true))
     }
+
+    val alerts by alertViewModel.recentAlerts.observeAsState(emptyList())
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -72,11 +65,18 @@ fun MapScreen() {
         // Map
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
-            uiSettings = uiSettings
-        ){
-            Marker(currentLocation)
-        }
+            uiSettings = uiSettings,
 
+            ) {
+            // Markers for Alerts
+            alerts.forEach { alert ->
+                Marker(
+                    position = LatLng(alert.latitude, alert.longitude),
+                    title = alert.title,
+                    snippet = alert.description
+                )
+            }
+        }
 
         // Search Bar and Filters
         Column(
@@ -122,19 +122,15 @@ fun MapScreen() {
                 item {
                     FilterButton(text = "All", isSelected = selectedUrgency == "All") {
                         selectedUrgency = "All"
-                        // TODO: Show all alerts
                     }
                     FilterButton(text = "High", isSelected = selectedUrgency == "High") {
                         selectedUrgency = "High"
-                        // TODO: Show High alerts
                     }
                     FilterButton(text = "Medium", isSelected = selectedUrgency == "Medium") {
                         selectedUrgency = "Medium"
-                        // TODO: Show Medium alerts
                     }
                     FilterButton(text = "Low", isSelected = selectedUrgency == "Low") {
                         selectedUrgency = "Low"
-                        // TODO: Show Low alerts
                     }
                 }
             }

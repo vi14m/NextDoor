@@ -37,11 +37,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.comalert.data.viewModel.AuthState
-import com.example.comalert.data.viewModel.AuthViewModel
+import com.example.comalert.viewModel.AuthState
+import com.example.comalert.viewModel.AuthViewModel
 
 @Composable
-fun SignUpScreen(navController: NavController,authViewModel: AuthViewModel= hiltViewModel()) {
+fun SignUpScreen(navController: NavController,authViewModel: AuthViewModel = hiltViewModel()) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val authState = authViewModel.authState.observeAsState()

@@ -1,10 +1,8 @@
-package com.example.comalert.data.viewModel
+package com.example.comalert.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.comalert.data.local.AlertDao
-import com.example.comalert.data.repository.AlertRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -71,7 +69,7 @@ class AuthViewModel @Inject constructor(
 
 sealed class AuthState {
     object Loading : AuthState()
-    object Authenticated :AuthState()
+    object Authenticated : AuthState()
     object Unauthenticated : AuthState()
     data class Error(val message: String) : AuthState()
 

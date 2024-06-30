@@ -43,8 +43,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.comalert.R
-import com.example.comalert.data.viewModel.AuthState
-import com.example.comalert.data.viewModel.AuthViewModel
+import com.example.comalert.viewModel.AuthState
+import com.example.comalert.viewModel.AuthViewModel
 
 @Composable
 fun ProfileScreen(navController: NavController, authViewModel: AuthViewModel = hiltViewModel()) {

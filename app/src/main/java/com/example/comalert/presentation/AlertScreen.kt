@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.example.comalert.data.viewModel.AlertViewModel
+import com.example.comalert.viewModel.AlertViewModel
 
 @Composable
 fun AlertScreen(navController: NavController, alertViewModel: AlertViewModel) {
@@ -128,10 +128,3 @@ fun AlertItem(
     }
 }
 
-
-
-@Preview(showBackground = true)
-@Composable
-private fun AlertScreenPreview(){
-
-}

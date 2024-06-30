@@ -28,6 +28,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,8 +39,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
-import com.example.comalert.data.viewModel.AlertViewModel
-import com.example.comalert.data.viewModel.AuthViewModel
+import com.example.comalert.viewModel.AlertViewModel
+import com.example.comalert.viewModel.AuthViewModel
 import com.example.comalert.presentation.AlertDetailsScreen
 import com.example.comalert.presentation.AlertScreen
 import com.example.comalert.presentation.Auth.LogInScreen
@@ -47,7 +50,7 @@ import com.example.comalert.presentation.MapScreen
 import com.example.comalert.presentation.PostAlertScreen
 import com.example.comalert.presentation.ProfileScreen
 import com.example.comalert.ui.theme.ComAlertTheme
-import com.example.comalert.data.viewModel.AuthState
+import com.example.comalert.viewModel.AuthState
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
 
@@ -75,7 +78,7 @@ fun NextDoorApp() {
     val alertViewModel: AlertViewModel = hiltViewModel()
     val authViewModel: AuthViewModel = hiltViewModel()
     val authState by authViewModel.authState.observeAsState()
-
+    var selected by remember { mutableStateOf(0) }
     Scaffold(
         bottomBar = {
             if (authState is AuthState.Authenticated) {
@@ -83,8 +86,9 @@ fun NextDoorApp() {
                     bottomNavItems.forEachIndexed { index, bottomNavItem ->
                         NavigationBarItem(
                             colors = NavigationBarItemDefaults.colors(Color.Black),
-                            selected = navController.currentDestination?.route == bottomNavItem.route,
+                            selected = selected == index,
                             onClick = {
+                                selected = index
                                 navController.navigate(bottomNavItem.route) {
                                     popUpTo(navController.graph.startDestinationId) {
                                         saveState = true
@@ -95,9 +99,9 @@ fun NextDoorApp() {
                             },
                             icon = {
                                 Icon(
-                                    imageVector = if (navController.currentDestination?.route == bottomNavItem.route) bottomNavItem.selectedIcon else bottomNavItem.unselectedIcon,
+                                    imageVector = if (selected == index) bottomNavItem.selectedIcon else bottomNavItem.unselectedIcon,
                                     contentDescription = bottomNavItem.title,
-                                    tint = if (navController.currentDestination?.route == bottomNavItem.route) Color.Black else Color.White
+                                    tint = if (selected == index) Color.Black else Color.White
                                 )
                             },
                             label = { Text(text = bottomNavItem.title, color = Color.White) },
@@ -141,10 +145,10 @@ fun CentralNavHost(
             composable("home") { HomeScreen(navController, alertViewModel) }
             composable("alerts") { AlertScreen(navController, alertViewModel) }
             composable("post") { PostAlertScreen(navController, alertViewModel) }
-            composable("map") { MapScreen() }
-            composable("profile") { ProfileScreen(navController,authViewModel) }
+            composable("map") { MapScreen(alertViewModel) }
+            composable("profile") { ProfileScreen(navController, authViewModel) }
             composable("alertDetails/{alertId}") { backStackEntry ->
-                val alertId = backStackEntry.arguments?.getString("alertId")?.toInt() ?: 0
+                val alertId = backStackEntry.arguments?.getString("alertId") ?: ""
                 AlertDetailsScreen(alertId, navController, alertViewModel)
             }
         }
@@ -155,31 +159,31 @@ fun CentralNavHost(
 val bottomNavItems = listOf(
     BottomNavItem(
         title = "Home",
-        route = "Home",
+        route = "home",
         selectedIcon = Icons.Filled.Home,
         unselectedIcon = Icons.Outlined.Home
     ),
     BottomNavItem(
         title = "Alerts",
-        route = "Alerts",
+        route = "alerts",
         selectedIcon = Icons.Filled.Notifications,
         unselectedIcon = Icons.Outlined.Notifications
     ),
     BottomNavItem(
         title = "Post",
-        route = "Post",
+        route = "post",
         selectedIcon = Icons.Filled.AddCircle,
         unselectedIcon = Icons.Outlined.AddCircle
     ),
     BottomNavItem(
         title = "Map",
-        route = "Map",
+        route = "map",
         selectedIcon = Icons.Filled.LocationOn,
         unselectedIcon = Icons.Outlined.LocationOn
     ),
     BottomNavItem(
         title = "Profile",
-        route = "Profile",
+        route = "profile",
         selectedIcon = Icons.Filled.Person,
         unselectedIcon = Icons.Outlined.Person
     )
