@@ -16,11 +16,8 @@ Welcome to NextDoor, a Community Alert App designed to keep you informed about i
 
 ## Live Demo
 
-<iframe width="560" height="315" 
-src="https://www.youtube.com/embed/RFvmlGCiKB8" 
-title="NextDoor Demo Video" frameborder="0" 
-allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-allowfullscreen></iframe>
+[![Watch the demo](https://img.youtube.com/vi/RFvmlGCiKB8/0.jpg)](https://youtu.be/RFvmlGCiKB8)
+
 
 ## Installation
 
