@@ -14,6 +14,14 @@ Welcome to NextDoor, a Community Alert App designed to keep you informed about i
 - **Kotlin:** The programming language used for app development.
 - **Firebase:** For authentication and storing alerts.
 
+## Live Demo
+
+<iframe width="560" height="315" 
+src="https://www.youtube.com/embed/RFvmlGCiKB8" 
+title="NextDoor Demo Video" frameborder="0" 
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+allowfullscreen></iframe>
+
 ## Installation
 
 To get started with NextDoor, follow these steps:
